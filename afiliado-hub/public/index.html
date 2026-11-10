@@ -1,0 +1,539 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1220">
+  <title>Afiliado Hub · Mercado Livre</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0b1220;
+      --panel: #111c2d;
+      --panel-2: #152238;
+      --line: #273750;
+      --text: #edf3fb;
+      --muted: #9aabc2;
+      --blue: #4ea1ff;
+      --blue-2: #2478dc;
+      --green: #34c88a;
+      --yellow: #f2bd57;
+      --red: #ff7373;
+      --shadow: 0 18px 50px rgba(0,0,0,.24);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background: radial-gradient(circle at 15% -15%, #1b3a60 0, transparent 38%), var(--bg);
+    }
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+    .shell { width: min(1220px, calc(100% - 36px)); margin: 0 auto; padding: 34px 0 70px; }
+    header { display: flex; justify-content: space-between; gap: 22px; align-items: flex-end; margin-bottom: 26px; }
+    .eyebrow { color: #82baff; font-size: 11px; letter-spacing: .16em; font-weight: 800; text-transform: uppercase; }
+    h1 { margin: 7px 0 8px; font-size: clamp(27px, 4vw, 40px); letter-spacing: -.04em; line-height: 1.08; }
+    .lead { margin: 0; color: var(--muted); max-width: 720px; line-height: 1.55; }
+    .version { white-space: nowrap; color: #9bb5d4; border: 1px solid var(--line); background: rgba(17,28,45,.7); padding: 8px 12px; border-radius: 999px; font-size: 12px; }
+    .grid { display: grid; grid-template-columns: 1.25fr .75fr; gap: 18px; margin-bottom: 18px; }
+    .panel { background: linear-gradient(160deg, rgba(21,34,56,.98), rgba(15,26,43,.98)); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow); padding: 22px; min-width: 0; }
+    .panel h2 { font-size: 18px; margin: 0 0 5px; letter-spacing: -.02em; }
+    .sub { color: var(--muted); font-size: 13px; line-height: 1.5; margin: 0 0 18px; }
+    .panel-head { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; margin-bottom: 16px; }
+    .status { display: inline-flex; align-items: center; gap: 7px; padding: 7px 10px; font-size: 11px; font-weight: 800; letter-spacing: .04em; border-radius: 999px; background: #263247; color: #c4d1e2; white-space: nowrap; }
+    .status::before { content:""; width:7px; height:7px; border-radius:50%; background: currentColor; }
+    .status.ok { background: rgba(52,200,138,.12); color: #67e0ad; }
+    .status.wait { background: rgba(242,189,87,.12); color: #f6cf80; }
+    .status.bad { background: rgba(255,115,115,.12); color: #ff9292; }
+    .status.busy { background: rgba(78,161,255,.12); color: #8bc0ff; }
+    .field { display:flex; flex-direction:column; gap:7px; min-width:0; }
+    label { color: #c8d5e6; font-size: 12px; font-weight: 700; }
+    input, select {
+      width:100%; min-width:0; color:var(--text); background:#0b1525; border:1px solid #30435e; border-radius:10px;
+      padding: 11px 12px; outline:none; transition: border .15s, box-shadow .15s;
+    }
+    input:focus, select:focus { border-color:var(--blue); box-shadow:0 0 0 3px rgba(78,161,255,.12); }
+    input::placeholder { color:#6f819a; }
+    .form-row { display:grid; grid-template-columns:1fr 130px; gap:12px; align-items:end; }
+    .form-row.two { grid-template-columns:1fr 1fr; }
+    .form-row.three { grid-template-columns:1fr 1fr 1fr; }
+    .actions { display:flex; gap:9px; flex-wrap:wrap; margin-top:14px; }
+    .btn { border:1px solid transparent; border-radius:10px; padding:10px 14px; font-size:12px; font-weight:800; transition: transform .12s, background .12s; }
+    .btn:hover { transform:translateY(-1px); }
+    .btn:disabled { opacity:.45; cursor:not-allowed; transform:none; }
+    .primary { color:#061322; background:linear-gradient(135deg,#83c2ff,#4a9cf5); }
+    .secondary { color:#dce9f8; background:#22334c; border-color:#38506f; }
+    .ghost { color:#a9cfff; background:transparent; border-color:#38506f; }
+    .danger { color:#ffb4b4; background:rgba(255,115,115,.08); border-color:rgba(255,115,115,.26); }
+    .qr-wrap { background:#08111e; border:1px dashed #39506e; border-radius:14px; min-height:205px; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:16px; text-align:center; }
+    .qr-wrap img { width:min(230px,100%); height:auto; padding:10px; background:#fff; border-radius:12px; }
+    .qr-placeholder { color:#8396b0; font-size:12px; line-height:1.6; max-width:260px; }
+    .hint { color:#8598b1; font-size:11px; line-height:1.5; margin:10px 0 0; }
+    .notice { padding:11px 13px; background:rgba(78,161,255,.08); border:1px solid rgba(78,161,255,.2); border-radius:11px; color:#b9d9ff; font-size:12px; line-height:1.55; }
+    .notice.warn { background:rgba(242,189,87,.08); border-color:rgba(242,189,87,.22); color:#f1d69f; }
+    .notice.error { background:rgba(255,115,115,.08); border-color:rgba(255,115,115,.22); color:#ffb8b8; }
+    .section { margin-top:18px; }
+    .section-title { display:flex; align-items:flex-end; justify-content:space-between; gap:16px; margin-bottom:13px; }
+    .section-title h2 { margin:0 0 5px; font-size:19px; }
+    .section-title p { margin:0; color:var(--muted); font-size:12px; }
+    .results { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+    .product { border:1px solid #2b3e58; background:#0d192a; border-radius:14px; padding:15px; min-width:0; }
+    .product h3 { margin:0 0 9px; font-size:14px; line-height:1.4; overflow-wrap:anywhere; }
+    .price { color:#7de0b6; font-size:13px; font-weight:800; margin-bottom:10px; }
+    .product-link { color:#8cbfff; display:block; font-size:11px; line-height:1.5; overflow-wrap:anywhere; text-decoration:none; margin-bottom:12px; }
+    .product-link:hover { text-decoration:underline; }
+    .product-actions { display:flex; gap:7px; flex-wrap:wrap; }
+    .product-actions .btn { padding:8px 10px; font-size:11px; }
+    .empty { border:1px dashed #334967; border-radius:13px; padding:26px; text-align:center; color:#8598b1; font-size:12px; grid-column:1/-1; }
+    .converter-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .result-link { padding:12px; background:#0a1727; border:1px solid #294360; border-radius:10px; color:#a9d1ff; font-size:12px; overflow-wrap:anywhere; line-height:1.5; }
+    .post-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .post-grid .wide { grid-column:1/-1; }
+    .muted { color:var(--muted); }
+    .toast { position:fixed; right:20px; bottom:20px; max-width:min(400px,calc(100vw - 40px)); padding:12px 15px; background:#1c2d44; border:1px solid #496180; box-shadow:var(--shadow); border-radius:12px; font-size:12px; z-index:20; opacity:0; transform:translateY(10px); transition:.2s; pointer-events:none; }
+    .toast.show { opacity:1; transform:translateY(0); }
+    footer { color:#70839d; font-size:11px; line-height:1.6; margin-top:20px; text-align:center; }
+    @media (max-width:850px) { .grid { grid-template-columns:1fr; } }
+    @media (max-width:620px) {
+      .shell { width:calc(100% - 22px); padding-top:23px; }
+      header { display:block; }
+      .version { display:inline-block; margin-top:14px; }
+      .panel { padding:17px; }
+      .form-row,.form-row.two,.form-row.three,.results,.converter-grid,.post-grid { grid-template-columns:1fr; }
+      .post-grid .wide { grid-column:auto; }
+      .section-title { align-items:flex-start; flex-direction:column; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <div>
+        <div class="eyebrow">Pesquisa · Afiliados · Publicação</div>
+        <h1>Afiliado Hub</h1>
+        <p class="lead">Pesquise produtos no Mercado Livre, gere links pelo portal oficial de afiliados e prepare ofertas para compartilhar no WhatsApp.</p>
+      </div>
+      <div class="version">VERSÃO 2.0 · LOCAL</div>
+    </header>
+
+    <div class="grid">
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <h2>01 · Pesquisa de produtos</h2>
+            <p class="sub">O navegador abre para você. Login e verificações são sempre feitos manualmente.</p>
+          </div>
+          <span id="mlStatus" class="status">INATIVO</span>
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <label for="searchQuery">O que você quer encontrar?</label>
+            <input id="searchQuery" type="text" placeholder="Ex.: teclado mecânico, monitor 27..." autocomplete="off">
+          </div>
+          <div class="field">
+            <label for="quantity">Quantidade</label>
+            <input id="quantity" type="number" min="1" max="50" value="10">
+          </div>
+        </div>
+        <div class="actions">
+          <button id="startSearch" class="btn primary">Abrir pesquisa no navegador</button>
+          <button id="captureProducts" class="btn secondary" disabled>Capturar produtos</button>
+          <button id="stopBrowser" class="btn ghost">Fechar navegador</button>
+        </div>
+        <p id="extractorMessage" class="hint">A sessão do Mercado Livre será guardada localmente neste computador.</p>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <h2>WhatsApp</h2>
+            <p class="sub">Conexão com QR Code na tela e sessão persistente.</p>
+          </div>
+          <span id="waStatus" class="status">DESCONECTADO</span>
+        </div>
+        <div id="qrContainer" class="qr-wrap">
+          <p class="qr-placeholder">Clique em “Conectar WhatsApp”. Quando necessário, o QR Code será exibido aqui para leitura pelo celular.</p>
+        </div>
+        <div class="actions">
+          <button id="connectWhatsApp" class="btn primary">Conectar WhatsApp</button>
+          <button id="disconnectWhatsApp" class="btn ghost">Desconectar</button>
+          <button id="loadGroups" class="btn secondary" disabled>Carregar grupos</button>
+        </div>
+        <p id="waMessage" class="hint">A sessão do WhatsApp também fica salva na pasta local de dados.</p>
+      </section>
+    </div>
+
+    <section class="panel">
+      <div class="section-title">
+        <div>
+          <h2>02 · Produtos encontrados</h2>
+          <p>Os dados são lidos dos resultados que estiverem visíveis no navegador do Mercado Livre.</p>
+        </div>
+        <span id="resultCount" class="status">0 PRODUTOS</span>
+      </div>
+      <div id="results" class="results">
+        <div class="empty">Faça uma pesquisa e clique em “Capturar produtos” para exibir os resultados aqui.</div>
+      </div>
+    </section>
+
+    <section class="panel section">
+      <div class="section-title">
+        <div>
+          <h2>03 · Conversor oficial de afiliado</h2>
+          <p>O link comissionado é criado no Gerador de Links do Mercado Livre, não por adição de parâmetros inventados.</p>
+        </div>
+      </div>
+      <div class="notice warn" style="margin-bottom:15px">
+        <strong>Como funciona:</strong> informe sua etiqueta, prepare um produto, conclua a geração no portal oficial que será aberto no navegador persistente e cole aqui o link que o Mercado Livre devolver. O painel só salva a conversão depois dessa confirmação.
+      </div>
+      <div class="converter-grid">
+        <div class="field">
+          <label for="affiliateLabel">Etiqueta de afiliado (a mesma selecionada no portal)</label>
+          <input id="affiliateLabel" maxlength="30" placeholder="Ex.: ofertas_site ou canal01">
+        </div>
+        <div class="field">
+          <label for="originalUrl">Link original do produto</label>
+          <input id="originalUrl" type="url" placeholder="Selecione um produto acima ou cole a URL">
+        </div>
+        <div class="field" style="grid-column:1/-1">
+          <label for="affiliateUrl">Link gerado pelo Mercado Livre</label>
+          <input id="affiliateUrl" type="url" placeholder="Cole aqui o link de afiliado recém-gerado">
+        </div>
+      </div>
+      <div id="converterMessage" class="hint">Nenhum produto preparado no momento.</div>
+      <div class="actions">
+        <button id="prepareAffiliate" class="btn primary">Preparar link oficial</button>
+        <button id="copyOriginal" class="btn ghost">Copiar link original</button>
+        <button id="confirmAffiliate" class="btn secondary" disabled>Confirmar link gerado</button>
+      </div>
+      <div id="confirmedLinkBox" style="display:none;margin-top:14px">
+        <div class="notice">Link de afiliado confirmado pelo usuário e salvo localmente:</div>
+        <div id="confirmedLink" class="result-link" style="margin-top:8px"></div>
+      </div>
+    </section>
+
+    <section class="panel section">
+      <div class="section-title">
+        <div>
+          <h2>04 · Preparar oferta para WhatsApp</h2>
+          <p>Somente conversões oficiais confirmadas podem ser enviadas pelo painel.</p>
+        </div>
+      </div>
+      <form id="offerForm" class="post-grid">
+        <div class="field wide">
+          <label for="chatId">Grupo do WhatsApp</label>
+          <select id="groupSelect">
+            <option value="">Carregue os grupos ou informe o ID manualmente abaixo</option>
+          </select>
+          <input id="chatId" placeholder="ID do grupo (termina em @g.us)" style="margin-top:7px">
+        </div>
+        <div class="field wide">
+          <label for="offerTitle">Título do produto</label>
+          <input id="offerTitle" placeholder="Nome do produto" required>
+        </div>
+        <div class="field wide">
+          <label for="offerOriginalUrl">Link original relacionado à conversão</label>
+          <input id="offerOriginalUrl" type="url" placeholder="Link do produto capturado" required>
+        </div>
+        <div class="field wide">
+          <label for="offerAffiliateUrl">Link de afiliado confirmado</label>
+          <input id="offerAffiliateUrl" type="url" placeholder="Link oficial salvo na etapa anterior" required>
+        </div>
+        <div class="field">
+          <label for="offerPrice">Preço (opcional)</label>
+          <input id="offerPrice" placeholder="R$ 299,90">
+        </div>
+        <div class="field">
+          <label for="offerInstallments">Parcelamento (opcional)</label>
+          <input id="offerInstallments" placeholder="10x sem juros">
+        </div>
+        <div class="field">
+          <label for="offerCoupon">Cupom (opcional)</label>
+          <input id="offerCoupon" placeholder="CUPOM10">
+        </div>
+        <div class="field">
+          <label for="offerImage">URL da imagem (opcional)</label>
+          <input id="offerImage" type="url" placeholder="https://...">
+        </div>
+        <div class="field wide">
+          <button id="sendOffer" type="submit" class="btn primary">Enviar oferta para o grupo selecionado</button>
+        </div>
+      </form>
+    </section>
+
+    <footer>
+      Aplicação local para uso pessoal. Não usa técnicas de ocultação de automação nem resolve CAPTCHA automaticamente. Respeite as regras do Mercado Livre e do WhatsApp e evite envios não solicitados.
+    </footer>
+  </main>
+  <div id="toast" class="toast"></div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    let products = [];
+    let pendingConversion = null;
+    let toastTimer = null;
+
+    async function api(path, options = {}) {
+      const response = await fetch(path, {
+        ...options,
+        headers: { 'Content-Type': 'application/json', ...(options.headers || {}) }
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || data.success === false) throw new Error(data.error || `Erro HTTP ${response.status}`);
+      return data;
+    }
+
+    function toast(message) {
+      $('toast').textContent = message;
+      $('toast').classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => $('toast').classList.remove('show'), 3300);
+    }
+
+    async function copyText(value) {
+      if (!value) throw new Error('Não há texto para copiar.');
+      await navigator.clipboard.writeText(value);
+      toast('Copiado para a área de transferência.');
+    }
+
+    function statusClass(status) {
+      if (['CONECTADO', 'RESULTS_READY'].includes(status)) return 'status ok';
+      if (['AGUARDANDO_QR', 'AUTENTICADO', 'WAITING_FOR_USER', 'CAPTURING', 'OPENING_BROWSER'].includes(status)) return 'status wait';
+      if (['ERRO', 'ERROR', 'NO_RESULTS'].includes(status)) return 'status bad';
+      return 'status';
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? '').replace(/[&<>"']/g, (char) => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      })[char]);
+    }
+
+    function renderProducts() {
+      $('resultCount').textContent = `${products.length} PRODUTO${products.length === 1 ? '' : 'S'}`;
+      if (!products.length) {
+        $('results').innerHTML = '<div class="empty">Nenhum produto disponível. Faça uma pesquisa no Mercado Livre.</div>';
+        return;
+      }
+      $('results').innerHTML = products.map((product, index) => `
+        <article class="product">
+          <h3>${escapeHtml(product.title)}</h3>
+          <div class="price">${escapeHtml(product.price || 'Preço não identificado')}</div>
+          <a class="product-link" href="${escapeHtml(product.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(product.url)}</a>
+          ${product.affiliateUrl ? '<div class="notice" style="margin-bottom:10px">Link oficial de afiliado confirmado</div>' : ''}
+          <div class="product-actions">
+            <button class="btn ghost" data-action="copy" data-index="${index}">Copiar link</button>
+            <button class="btn secondary" data-action="prepare" data-index="${index}">Preparar afiliado</button>
+            ${product.affiliateUrl ? `<button class="btn primary" data-action="use" data-index="${index}">Usar na oferta</button>` : ''}
+          </div>
+        </article>`).join('');
+    }
+
+    $('results').addEventListener('click', async (event) => {
+      const button = event.target.closest('button[data-action]');
+      if (!button) return;
+      const product = products[Number(button.dataset.index)];
+      if (!product) return;
+      try {
+        if (button.dataset.action === 'copy') await copyText(product.url);
+        if (button.dataset.action === 'prepare') await prepareProduct(product);
+        if (button.dataset.action === 'use') useInOffer(product);
+      } catch (error) { toast(error.message); }
+    });
+
+    async function refreshExtractorStatus() {
+      try {
+        const state = await api('/api/extractor/status');
+        $('mlStatus').textContent = state.status.replaceAll('_', ' ');
+        $('mlStatus').className = statusClass(state.status);
+        $('extractorMessage').textContent = state.message || '';
+        $('captureProducts').disabled = !['WAITING_FOR_USER', 'RESULTS_READY', 'NO_RESULTS'].includes(state.status);
+        if (Array.isArray(state.products) && state.products.length) {
+          const known = new Map(products.map((p) => [p.url, p]));
+          products = state.products.map((p) => ({ ...p, ...(known.get(p.url) || {}) }));
+          renderProducts();
+        }
+      } catch (_) {}
+    }
+
+    async function refreshWhatsAppStatus() {
+      try {
+        const state = await api('/api/whatsapp/status');
+        $('waStatus').textContent = state.status;
+        $('waStatus').className = statusClass(state.status);
+        $('waMessage').textContent = state.lastError ? `${state.message} ${state.lastError}` : state.message;
+        $('loadGroups').disabled = state.status !== 'CONECTADO';
+        if (state.qrCode) {
+          $('qrContainer').innerHTML = `<img src="${state.qrCode}" alt="QR Code para conectar WhatsApp"><p class="hint">Abra o WhatsApp no celular → Aparelhos conectados → Conectar aparelho.</p>`;
+        } else if (state.status === 'CONECTADO') {
+          $('qrContainer').innerHTML = '<div style="font-size:38px">✓</div><strong style="color:#67e0ad;margin-top:7px">WhatsApp conectado</strong><p class="hint">Sessão autenticada e pronta para uso.</p>';
+        } else if (state.status === 'INICIALIZANDO' || state.status === 'AUTENTICADO') {
+          $('qrContainer').innerHTML = '<p class="qr-placeholder">' + escapeHtml(state.message) + '</p>';
+        } else if (state.status === 'ERRO') {
+          $('qrContainer').innerHTML = '<p class="qr-placeholder">' + escapeHtml(state.message) + '</p>';
+        } else if (!state.qrCode) {
+          $('qrContainer').innerHTML = '<p class="qr-placeholder">Clique em “Conectar WhatsApp”. Quando necessário, o QR Code será exibido aqui para leitura pelo celular.</p>';
+        }
+      } catch (_) {}
+    }
+
+    async function prepareProduct(product) {
+      const label = $('affiliateLabel').value.trim();
+      if (!label) throw new Error('Informe sua etiqueta de afiliado antes de preparar o link.');
+      $('originalUrl').value = product.url;
+      $('affiliateUrl').value = '';
+      $('confirmedLinkBox').style.display = 'none';
+      $('confirmAffiliate').disabled = true;
+      const result = await api('/api/converter/prepare', {
+        method: 'POST',
+        body: JSON.stringify({ originalUrl: product.url, title: product.title, label })
+      });
+      pendingConversion = {
+        id: result.pendingId,
+        originalUrl: result.originalUrl,
+        title: result.title,
+        label: result.affiliateLabel
+      };
+      $('converterMessage').textContent = result.message + (result.openedInPersistentBrowser ? '' : ` ${result.generatorUrl}`);
+      $('confirmAffiliate').disabled = false;
+      toast('Produto preparado. Conclua a geração no portal oficial e cole o link nesta tela.');
+    }
+
+    $('prepareAffiliate').addEventListener('click', async () => {
+      try {
+        const product = products.find((p) => p.url === $('originalUrl').value.trim()) || {
+          url: $('originalUrl').value.trim(), title: ''
+        };
+        await prepareProduct(product);
+      } catch (error) { toast(error.message); $('converterMessage').textContent = error.message; }
+    });
+
+    $('copyOriginal').addEventListener('click', async () => {
+      try { await copyText($('originalUrl').value.trim()); }
+      catch (error) { toast(error.message); }
+    });
+
+    $('confirmAffiliate').addEventListener('click', async () => {
+      try {
+        if (!pendingConversion) throw new Error('Prepare primeiro um produto.');
+        const result = await api('/api/converter/confirm', {
+          method: 'POST',
+          body: JSON.stringify({
+            pendingId: pendingConversion.id,
+            originalUrl: pendingConversion.originalUrl,
+            affiliateUrl: $('affiliateUrl').value.trim(),
+            label: $('affiliateLabel').value.trim()
+          })
+        });
+        const conversion = result.conversion;
+        const product = products.find((p) => p.url === conversion.originalUrl);
+        if (product) product.affiliateUrl = conversion.affiliateUrl;
+        $('confirmedLink').textContent = conversion.affiliateUrl;
+        $('confirmedLinkBox').style.display = 'block';
+        $('converterMessage').textContent = `Conversão confirmada com a etiqueta “${conversion.affiliateLabel}”.`;
+        renderProducts();
+        toast('Link oficial confirmado e salvo.');
+      } catch (error) { toast(error.message); }
+    });
+
+    function useInOffer(product) {
+      if (!product.affiliateUrl) throw new Error('Confirme o link oficial antes de usar a oferta.');
+      $('offerTitle').value = product.title;
+      $('offerOriginalUrl').value = product.url;
+      $('offerAffiliateUrl').value = product.affiliateUrl;
+      $('offerPrice').value = product.price || '';
+      $('offerForm').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    $('startSearch').addEventListener('click', async () => {
+      try {
+        const data = await api('/api/extractor/start', {
+          method: 'POST',
+          body: JSON.stringify({ query: $('searchQuery').value, quantity: $('quantity').value })
+        });
+        products = [];
+        renderProducts();
+        $('mlStatus').textContent = data.status.replaceAll('_', ' ');
+        $('mlStatus').className = statusClass(data.status);
+        $('extractorMessage').textContent = data.message;
+        $('captureProducts').disabled = false;
+        toast('Navegador aberto. Termine o login manualmente, se solicitado.');
+      } catch (error) { toast(error.message); $('extractorMessage').textContent = error.message; }
+    });
+
+    $('captureProducts').addEventListener('click', async () => {
+      try {
+        const data = await api('/api/extractor/capture', { method: 'POST', body: '{}' });
+        products = data.products || [];
+        renderProducts();
+        $('extractorMessage').textContent = data.message;
+        $('mlStatus').textContent = data.status.replaceAll('_', ' ');
+        $('mlStatus').className = statusClass(data.status);
+        toast(data.message);
+      } catch (error) { toast(error.message); }
+    });
+
+    $('stopBrowser').addEventListener('click', async () => {
+      try {
+        const data = await api('/api/extractor/stop', { method: 'POST', body: '{}' });
+        $('extractorMessage').textContent = data.message;
+        $('mlStatus').textContent = 'FECHADO';
+        $('mlStatus').className = 'status';
+        $('captureProducts').disabled = true;
+      } catch (error) { toast(error.message); }
+    });
+
+    $('connectWhatsApp').addEventListener('click', async () => {
+      try {
+        await api('/api/whatsapp/connect', { method: 'POST', body: '{}' });
+        await refreshWhatsAppStatus();
+      } catch (error) { toast(error.message); }
+    });
+
+    $('disconnectWhatsApp').addEventListener('click', async () => {
+      try { await api('/api/whatsapp/disconnect', { method: 'POST', body: '{}' }); await refreshWhatsAppStatus(); }
+      catch (error) { toast(error.message); }
+    });
+
+    $('loadGroups').addEventListener('click', async () => {
+      try {
+        const data = await api('/api/whatsapp/groups');
+        $('groupSelect').innerHTML = '<option value="">Selecione um grupo...</option>' + data.groups.map((g) => `<option value="${escapeHtml(g.id)}">${escapeHtml(g.name)}</option>`).join('');
+        toast(`${data.groups.length} grupo(s) carregado(s).`);
+      } catch (error) { toast(error.message); }
+    });
+
+    $('groupSelect').addEventListener('change', () => { $('chatId').value = $('groupSelect').value; });
+
+    $('offerForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const button = $('sendOffer');
+      button.disabled = true;
+      try {
+        const result = await api('/api/offers/send', {
+          method: 'POST',
+          body: JSON.stringify({
+            chatId: $('chatId').value.trim(),
+            title: $('offerTitle').value.trim(),
+            originalUrl: $('offerOriginalUrl').value.trim(),
+            affiliateUrl: $('offerAffiliateUrl').value.trim(),
+            price: $('offerPrice').value.trim(),
+            installments: $('offerInstallments').value.trim(),
+            coupon: $('offerCoupon').value.trim(),
+            imageUrl: $('offerImage').value.trim()
+          })
+        });
+        toast(result.message || 'Oferta enviada.');
+      } catch (error) { toast(error.message); }
+      finally { button.disabled = false; }
+    });
+
+    refreshExtractorStatus();
+    refreshWhatsAppStatus();
+    setInterval(refreshExtractorStatus, 4000);
+    setInterval(refreshWhatsAppStatus, 4000);
+  </script>
+</body>
+</html>
